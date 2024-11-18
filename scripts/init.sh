@@ -2,6 +2,9 @@
 # chmod +x ./scripts/**/*.sh
 # 이후 sh 파일의 줄바꿈 형식을 LF로 변경합니다.
 
+cd repository/packages/storybook && pnpm install
+cd ../../../
+
 for dir in repository/packages/*; do
   if [ -d "$dir" ]; then
     (cd "$dir" && bun link)
