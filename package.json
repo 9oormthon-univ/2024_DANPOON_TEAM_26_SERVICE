@@ -1,0 +1,32 @@
+{
+  "name": "request",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "init": "scripts/init.sh",
+    "dev:repository": "bun --filter '*' dev",
+    "format": "biome format --write ."
+  },
+  "workspaces": ["repository/apps/*", "repository/packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@types/bun": "latest",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "^7.2.1",
+    "husky": "^9.1.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "cz-config.cjs"
+    }
+  }
+}

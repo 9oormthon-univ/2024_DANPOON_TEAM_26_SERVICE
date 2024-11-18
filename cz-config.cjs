@@ -1,0 +1,26 @@
+module.exports = {
+  types: [
+    { value: "feat", name: "feat:     새로운 기능 추가" },
+    { value: "fix", name: "fix:      버그 수정" },
+    { value: "perf", name: "perf:     성능 개선" },
+    { value: "refactor", name: "refactor: 코드 리팩토링" },
+    { value: "test", name: "test:     테스트 코드 추가/수정" },
+    { value: "ci", name: "ci:       CI 설정 변경" },
+    { value: "docs", name: "docs:     문서 수정" },
+    { value: "build", name: "build:    빌드 관련 변경" },
+    { value: "chore", name: "chore:    기타 변경" },
+  ],
+  scopes: [{ name: "workspace" }],
+  messages: {
+    type: "수정 종류를 선택하세요:",
+    scope: "영향받은 서비스를 선택하세요 (optional):",
+    customScope: "영향받은 서비스가 없다면 직접 입력하세요:",
+    subject: "수정사항을 한 줄로 요약하세요 (최대 50자):",
+    body: "수정 사항에 대한 자세한 설명 (optional):\n",
+    footer: "이슈 번호를 입력하세요 (optional):\n",
+    confirmCommit: "이 커밋 메시지로 커밋하시겠습니까?",
+  },
+  allowBreakingChanges: ["feat", "fix"],
+  footerPrefix: "ISSUES CLOSED:",
+  subjectLimit: 50,
+};
