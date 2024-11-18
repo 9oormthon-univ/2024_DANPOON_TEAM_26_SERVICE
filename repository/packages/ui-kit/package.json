@@ -1,0 +1,34 @@
+{
+  "name": "@request/ui-kit",
+  "module": "src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.cts"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "nodemonConfig": {
+    "watch": ["src/"],
+    "ext": "ts,tsx",
+    "exec": "bun build.ts"
+  },
+  "scripts": {
+    "build": "bun build.ts",
+    "dev": "nodemon",
+    "plop:component": "plop --plopfile plop/component-plop.cjs"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "autoprefixer": "^10.4.20",
+    "nodemon": "^3.1.7",
+    "plop": "^4.0.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsup": "^8.3.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
