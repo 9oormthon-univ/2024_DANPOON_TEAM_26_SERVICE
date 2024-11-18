@@ -8,8 +8,8 @@ function getAbsolutePath(value: string): string {
 
 const config: StorybookConfig = {
   stories: [
-    "../../../apps/request-client/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../../ui-kit/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    "../apps/client/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    "../packages/ui-kit/**/*.stories.@(js|jsx|mjs|ts|tsx)",
   ],
   addons: [getAbsolutePath("@storybook/addon-essentials")],
   framework: {
