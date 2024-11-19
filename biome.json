@@ -31,5 +31,9 @@
       "quoteStyle": "double"
     }
   },
-  "overrides": []
+  "overrides": [
+    {
+      "include": ["repository/apps/request-client/**"]
+    }
+  ]
 }
