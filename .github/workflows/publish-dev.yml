@@ -1,0 +1,79 @@
+name: Publish service (dev)
+
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+env:
+  CHANNEL: dev
+  AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+  ECR_OUTPUTS: ${{ secrets.container_registry_outputs_dev }}
+  CODEDEPLOY_OUTPUTS: ${{ secrets.codedeploy_outputs_dev }}
+  ECR_REPOSITORY: request-dev
+jobs:
+  docker-build:
+    name: Build Docker images
+    if: github.repository == '9U-ReQuest/service'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ["client", "gasi"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: |
+          docker buildx build -t ${{ matrix.app }}:${{ github.sha }} -f apps/${{ matrix.app }}/Dockerfile .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push images
+        run: |
+          docker tag ${{ matrix.app }}:${{ github.sha }} ${{ fromJson(env.ECR_OUTPUTS).registry_id.value }}/$ECR_REPOSITORY:${{ github.sha }}
+          docker push ${{ fromJson(env.ECR_OUTPUTS).registry_id.value }}/$ECR_REPOSITORY:${{ github.sha }}
+
+  codedeploy:
+    name: Deploy to CodeDeploy
+    if: github.repository == '9U-ReQuest/service'
+    needs: docker-build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [ "client", "gasi" ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+      - name: Create deployment archive
+        run: |
+          cd ./codedeploy/$CHANNEL
+          mkdir scripts
+          touch scripts/deploy.sh
+          echo "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ fromJson(env.ECR_OUTPUTS).registry_id.value }}" >> scripts/deploy.sh
+          echo "export ECR_REGISTRY=${{ fromJson(env.ECR_OUTPUTS).registry_id.value }}" >> scripts/deploy.sh
+          echo "export ECR_REPOSITORY=$ECR_REPOSITORY" >> scripts/deploy.sh
+          echo "export IMAGE_TAG=${{ github.sha }}" >> scripts/deploy.sh
+          echo "docker-compose -f /var/deployment/docker-compose.yml up -d" >> scripts/deploy.sh
+          zip -r ${{ github.sha }}.zip .
+          aws s3 cp ${{ github.sha }}.zip s3://${{ fromJson(env.CODEDEPLOY_OUTPUTS).bucket.value }}/${{ matrix.app }}-${{ github.sha }}.zip
+
+
+      - name: Deploy to CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ fromJson(env.CODEDEPLOY_OUTPUTS).name.value }} \
+            --deployment-group-name ${{ fromJson(env.CODEDEPLOY_OUTPUTS).gasi_group_name.value }} \
+            --deployment-config-name CodeDeployDefault.OneAtATime \
+            --s3-location bucket=${{ fromJson(env.CODEDEPLOY_OUTPUTS).bucket.value }},bundleType=zip,key=${{ matrix.app }}-${{ github.sha }}.zip
