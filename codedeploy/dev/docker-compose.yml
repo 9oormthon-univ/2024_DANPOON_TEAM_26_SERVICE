@@ -4,8 +4,10 @@ services:
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${CLIENT_IMAGE_TAG}
     ports:
       - "80:80"
+    environment:
+      PRIVATE_GASI_API_URL: gasi.request.internal
   gasi:
     image: ${ECR_REGISTRY}/${ECR_REPOSITORY}:${GASI_IMAGE_TAG}
     ports:
-      - "80:3000"
+      - "80:8080"
     container_name: gasi.request.internal

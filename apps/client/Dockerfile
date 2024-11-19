@@ -1,35 +1,23 @@
-ARG BUN_PKG_MANAGER="this.packageManager=\"bun@1.1.33\""
-ARG YARN_PKG_MANAGER="this.packageManager=\"yarn@1.22.22\""
-
-FROM oven/bun as bun
+FROM oven/bun AS bun
 WORKDIR /app
 
-FROM oven/bun:distroless as bun-distroless
+FROM oven/bun:distroless AS bun-distroless
 WORKDIR /app
-
-# ================= TURBO PRUNE ===================
-
-FROM bun as pruned
-ARG YARN_PKG_MANAGER
-COPY . .
-RUN bunx json -I -f package.json -e ${YARN_PKG_MANAGER}
-RUN bunx turbo prune --scope="client" --docker
 
 # =============== INSTALL & BUILD =================
 
-FROM bun as builder
+FROM oven/bun AS builder
 ARG BUN_PKG_MANAGER
-COPY --from=pruned /app/out/full/ .
-RUN bunx json -I -f package.json -e ${BUN_PKG_MANAGER}
-RUN bun install --production
+COPY . .
+
+RUN bun install
 RUN bunx clean-modules -y "**/*.ts" "**/@types/**"
-RUN bunx turbo build --filter="gasi..."
+RUN bunx turbo build --filter="@request/client"
 
 # ================== RELEASE ======================
 
-FROM bun-alpine AS release
-USER bun
+FROM oven/bun:distroless AS release
 COPY --from=builder /app .
 EXPOSE 80/tcp
-WORKDIR /app/apps/gasi
-ENTRYPOINT [ "bun", "dist/index.js" ]
+WORKDIR /app/apps/client
+ENTRYPOINT [ "bun", "run", "start" ]
