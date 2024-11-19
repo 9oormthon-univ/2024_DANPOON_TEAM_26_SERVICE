@@ -8,8 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import NotificationIcon from "./NotificationIcon";
 import { HeaderContext } from "./header-context";
+import NotificationIcon from "./notification-icon";
 
 type HeaderProps = {
   children: ReactNode;
