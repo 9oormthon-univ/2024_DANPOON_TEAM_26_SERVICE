@@ -1,7 +1,7 @@
-import { cors } from "@elysiajs/cors";
+import fastifyCors from "@fastify/cors";
 import { initTRPC } from "@trpc/server";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { Elysia } from "elysia";
+import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
+import Fastify from "fastify";
 import z from "zod";
 
 const t = initTRPC.create();
@@ -22,15 +22,25 @@ const appRouter = t.router({
 
 export type AppRouter = typeof appRouter;
 
-const app = new Elysia()
-  .use(cors())
-  .all("/trpc/*", async (opts) => {
-    const res = await fetchRequestHandler({
-      endpoint: "/trpc",
-      router: appRouter,
-      req: opts.request,
-    });
-    return res;
-  })
-  .on("request", (ctx) => console.log("Request received:", ctx.url))
-  .listen(8080);
+const server = Fastify({
+  logger: true,
+});
+
+await server.register(fastifyCors);
+
+await server.register(fastifyTRPCPlugin, {
+  prefix: "/trpc",
+  trpcOptions: { router: appRouter },
+});
+
+const start = async () => {
+  try {
+    await server.listen({ port: 8080 });
+    console.log("Server is running on port 8080");
+  } catch (err) {
+    server.log.error(err);
+    process.exit(1);
+  }
+};
+
+start();
