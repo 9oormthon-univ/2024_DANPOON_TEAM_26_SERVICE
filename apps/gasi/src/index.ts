@@ -1,26 +1,10 @@
+import * as dotenvx from "@dotenvx/dotenvx";
 import fastifyCors from "@fastify/cors";
-import { initTRPC } from "@trpc/server";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import Fastify from "fastify";
-import z from "zod";
+import { appRouter } from "./router";
 
-const t = initTRPC.create();
-const p = t.procedure;
-
-const appRouter = t.router({
-  v1: {
-    test: p.query(() => "test"),
-    mutation: p
-      .input(
-        z.object({
-          name: z.string(),
-        }),
-      )
-      .mutation((opts) => opts.input.name),
-  },
-});
-
-export type AppRouter = typeof appRouter;
+dotenvx.config();
 
 const server = Fastify({
   logger: true,
