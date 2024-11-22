@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { kakaoAuthorize } from "../auth/providers.js";
 import { p } from "../trpc.js";
 
-export const callback = p.input(z.string()).query(async ({ input }) => {});
+export const kakao = p.input(z.string()).query(async ({ input, ctx }) => {
+  return await kakaoAuthorize(`${ctx.baseUrl}/callback`, input);
+});
