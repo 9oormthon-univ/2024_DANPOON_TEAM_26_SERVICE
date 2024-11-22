@@ -3,7 +3,9 @@
 import logo from "@/assets/icons/logo.svg";
 import mypage from "@/assets/icons/mypage.svg";
 import pencil from "@/assets/icons/pencil.svg";
+import { ROUTES } from "@/shared/constant/url";
 import { cn } from "@/shared/lib/utils";
+import Typography from "@/shared/ui/common/typography/typography";
 import {
   Menubar,
   MenubarContent,
@@ -11,6 +13,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@/shared/ui/menubar";
+import Flex from "@/shared/ui/wrapper/flex/flex";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,7 +31,7 @@ function Header({ children }: HeaderProps): JSX.Element {
 
   return (
     <HeaderContext.Provider value={{ isMobileMenuOpen, setIsMobileMenuOpen }}>
-      <header className="min-w-2xl max-w-2xl w-full flex items-end border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 mt-5">
+      <header className="min-w-[600px] max-w-[1375px] w-full flex items-end border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 mt-5">
         <div className="w-full flex py-6 items-end">{children}</div>
       </header>
     </HeaderContext.Provider>
@@ -46,10 +49,14 @@ function Logo(): JSX.Element {
 function Nav(): JSX.Element {
   const pathname = usePathname();
   const navItems = [
-    { title: "AI 과제 생성", href: "/assignment" },
-    { title: "과제 평가", href: "/evaluations" },
-    { title: "기업과제", href: "/business-assignment" },
+    { title: "AI 과제 생성", href: ROUTES.ASSIGNMENT },
+    { title: "과제 평가", href: ROUTES.EVALUATOIN },
+    { title: "기업과제", href: ROUTES.ASSIGNMENT_BUSINESS },
   ];
+
+  const activeHref = [...navItems]
+    .sort((a, b) => b.href.length - a.href.length)
+    .find((item) => pathname === item.href || pathname?.startsWith(`${item.href}/`))?.href;
 
   return (
     <nav className="self-end space-x-10">
@@ -59,7 +66,7 @@ function Nav(): JSX.Element {
           href={item.href}
           className={cn(
             "text-base font-bold transition-colors hover:text-primary",
-            pathname?.startsWith(item.href) && "text-primary",
+            item.href === activeHref && "text-primary",
           )}
         >
           {item.title}
@@ -71,11 +78,13 @@ function Nav(): JSX.Element {
 
 function LoginAndSignup(): JSX.Element {
   return (
-    <div className="flex flex-1 justify-end">
-      <Link href="/login" className="font-semibold text-base">
-        로그인/회원가입
+    <Flex justifyContent="end" className="flex-1">
+      <Link href="/login" passHref legacyBehavior>
+        <Typography as="a" size="base" weight="semibold">
+          로그인/회원가입
+        </Typography>
       </Link>
-    </div>
+    </Flex>
   );
 }
 
@@ -128,7 +137,7 @@ function NotificationMenu(): JSX.Element {
   };
 
   return (
-    <Menubar className="border-none">
+    <Menubar className="border-none shadow-none">
       <MenubarMenu>
         <MenubarTrigger className="relative cursor-pointer">
           <NotificationIcon count={unreadCount} />
@@ -187,7 +196,7 @@ const MENUBAR_ITEMS = [
 
 function MyPageMenu({ name, githubId, profileImageUrl }: MyPageMenuProps): JSX.Element {
   return (
-    <Menubar className="border-none">
+    <Menubar className="border-none shadow-none">
       <MenubarMenu>
         <MenubarTrigger className="cursor-pointer">
           <Image src={mypage} alt="마이페이지" width={44} height={44} />

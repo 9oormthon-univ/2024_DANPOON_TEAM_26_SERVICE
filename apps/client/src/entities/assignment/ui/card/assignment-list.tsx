@@ -1,86 +1,72 @@
 "use client";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/shared/ui/pagination";
+
+import usePagination from "@/shared/hooks/use-pagination";
+import Typography from "@/shared/ui/common/typography/typography";
+import Flex from "@/shared/ui/wrapper/flex/flex";
+import Pagination from "@/widgets/ui/pagination-impl";
+import type { Assignment } from "@request/specs";
 import type { ReactNode } from "react";
-import { useState } from "react";
-import type { AssignmentCardType, AssingmentCardList } from "../../types/assignment.type";
 import AssignmentCard from "./assignment-card";
 
 const ITEMS_PER_PAGE = 12;
 
 interface AssignmentListProps {
-  cards: AssingmentCardList;
+  assignments: Assignment[];
   headerTitle?: string;
   extraControls?: ReactNode;
   isPagination?: boolean;
 }
 
-export default function AssignmentList({
-  cards,
+const AssignmentList: React.FC<AssignmentListProps> = ({
+  assignments,
   headerTitle = "전체 과제",
   extraControls,
   isPagination = true,
-}: AssignmentListProps) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const total = cards.length;
-  const totalPages = Math.ceil(cards.length / ITEMS_PER_PAGE);
+}) => {
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedCards,
+    goToPage,
+    goToPrev,
+    goToNext,
+  } = usePagination<Assignment>({
+    items: assignments,
+    itemsPerPage: ITEMS_PER_PAGE,
+  });
 
-  const paginatedCards = cards.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
-  );
+  const total = assignments.length;
 
   return (
     <section className="w-full py-12">
-      <div className="w-full flex items-center justify-between mb-16 text-xl">
-        <h2 className="font-semibold">
-          {headerTitle} <span className="text-[#8A1B22] font-bold">({total})</span>
-        </h2>
+      <Flex alignItems="center" justifyContent="between" className="w-full mb-16">
+        <Typography as="h2" size="xl" weight="semibold">
+          {headerTitle}{" "}
+          <Typography as="span" size="xl" weight="bold" color="primary">
+            ({total})
+          </Typography>
+        </Typography>
         {extraControls && <div>{extraControls}</div>}
-      </div>
+      </Flex>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {paginatedCards.map((card: AssignmentCardType) => (
-          <AssignmentCard key={card.id} card={card} />
+        {paginatedCards.map((card: Assignment) => (
+          <AssignmentCard key={card.id} assignment={card} />
         ))}
       </div>
-      {isPagination && (
-        <div className="mt-8">
-          <Pagination>
-            <PaginationContent className="gap-4">
-              <PaginationItem>
-                <PaginationPrevious
-                  isActive={currentPage === 1}
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                />
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(index + 1)}
-                    isActive={currentPage === index + 1}
-                  >
-                    {index + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  isActive={currentPage === totalPages}
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+
+      {isPagination && totalPages > 1 && (
+        <Pagination
+          className="mt-8"
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+          onPrevious={goToPrev}
+          onNext={goToNext}
+        />
       )}
     </section>
   );
-}
+};
+
+export default AssignmentList;

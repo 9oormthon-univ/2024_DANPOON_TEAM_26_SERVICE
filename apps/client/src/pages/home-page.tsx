@@ -1,7 +1,10 @@
-import { mockListings } from "@/entities/assignment/mocks";
 import AssignmentList from "@/entities/assignment/ui/card/assignment-list";
 import HomeBanner from "@/features/home/ui/home-banner";
-import PopularAssignment from "@/features/home/ui/popular-assignment";
+import PopularAssignment from "@/features/home/ui/popular-assignment/popular-assignment";
+import { ROUTES } from "@/shared/constant/url";
+import { mockAssignments } from "@/shared/mocks/constant/assignment.mock";
+import Typography from "@/shared/ui/common/typography/typography";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -12,11 +15,14 @@ export default function HomePage() {
       </div>
       <hr className="my-12 " />
       <div className="px-24">
-        {/* Todo) fetch */}
         <AssignmentList
-          extraControls={<div>전체 기업과제 확인하기 &gt;</div>}
+          extraControls={
+            <Link href={ROUTES.ASSIGNMENT_BUSINESS} passHref legacyBehavior>
+              <Typography as="a">전체 기업과제 확인하기 &gt;</Typography>
+            </Link>
+          }
           isPagination={false}
-          cards={mockListings}
+          assignments={mockAssignments}
           headerTitle="전체 과제"
         />
       </div>
