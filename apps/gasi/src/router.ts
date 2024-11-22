@@ -115,13 +115,13 @@ export const appRouter = t.router({
         };
       }),
       // 과제 ID로 과제 세부사항을 봅니다.
-      get: p.input(z.string()).query(({ input }) => {
-        if (input === "none")
+      get: p.input(z.object({ id: z.string() })).query(({ input }) => {
+        if (input.id === "none")
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "해당 ID의 과제를 찾을 수 없습니다.",
           });
-        return createMockAssignment(input, "테스트과제 - id none으로 하면 오류남");
+        return createMockAssignment(input.id, "테스트과제 - id none으로 하면 오류남");
       }),
       // 과제 생성 요청을 합니다. 계정당 하나만 진행할 수 있습니다.
       generate: p.input(AssignmentPromptSchema).mutation(({ input }) => ({
@@ -146,11 +146,11 @@ export const appRouter = t.router({
         }),
       ),
       // 과제 시도를 취소합니다.
-      cancel: p.input(z.string()).mutation((): string => {
+      cancel: p.input(z.object({ id: z.string() })).mutation((): string => {
         return humanId({ separator: "-", capitalize: false });
       }),
       // 제출물의 파일 목록을 트리 형태로 반환합니다.
-      files: p.input(z.string()).query((): ReviewFileTree[] => [
+      files: p.input(z.object({ id: z.string() })).query((): ReviewFileTree[] => [
         {
           name: "src",
           type: "directory",
@@ -190,9 +190,9 @@ export const TestSchema = z.object({ name: z.string(), });`,
           createMockReviewEntry("라인 채점 항목", "lint", "src/index.js", [10, 13]),
         ]),
       // 리뷰의 기본 정보를 반환합니다.
-      review: p.input(z.string()).query(
+      review: p.input(z.object({ id: z.string() })).query(
         ({ input }): Omit<Review, "entries"> => ({
-          id: input,
+          id: input.id,
           status: "DONE",
           scenarios: [
             {
