@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { renderTrpcPanel } from "trpc-ui";
 import { createContext } from "./context.js";
 import { appRouter } from "./router.js";
+import Docker from "dockerode";
 
 dotenvx.config();
 
@@ -29,9 +30,13 @@ if (process.env.CHANNEL === "local") {
   });
 }
 
+server.post("/github/webhook", async (_, res) => {
+  server.log.info(res);
+});
+
 const start = async () => {
   try {
-    await server.listen({ port: 8080 });
+    await server.listen({ host: '0.0.0.0', port: 8080 });
     console.log("Server is running on port 8080");
   } catch (err) {
     server.log.error(err);
@@ -39,4 +44,9 @@ const start = async () => {
   }
 };
 
+export const docker = process.env.DOCKER_SOCK ? new Docker({socketPath: process.env.DOCKER_SOCK}) : null;
+
+if(docker) {
+  console.log("Dockerode Initiated.");
+}
 start();
