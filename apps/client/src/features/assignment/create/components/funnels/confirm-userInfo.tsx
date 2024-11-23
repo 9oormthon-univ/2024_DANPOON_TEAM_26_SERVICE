@@ -13,14 +13,11 @@ interface ConfirmUserInfoProps {
 }
 
 export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
-  // 유저 정보 가져와서 fields, tech, company로 보여줌
   const [fields, setFields] = useState<string[]>(["안드로이드", "프론트엔드", "QA"]);
   const [tech, setTech] = useState<string[]>(["Rest API", "Adobe Photoshop", "Axios"]);
   const [company, setCompany] = useState<string[]>(["Kakao", "현대자동차", "넷마블"]);
 
-  // 삭제 버튼 누르면 없애야 함.
   const handleRemoveField = (field: string, type: "fields" | "tech" | "company") => {
-    console.log(field, type);
     if (type === "fields") {
       if (fields.length === 1) {
         return alert("하나 이상의 직무는 선택되어야 합니다.");
@@ -41,7 +38,7 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
 
   return (
     <CreateAssignmentLayout>
-      <Flex direction="col" className="w-full max-w-2xl mx-auto p-4">
+      <Flex direction="col" className="w-full max-w-2xl p-4">
         <Typography as="h3" size="lg" weight="semibold" className="mb-4">
           과제 생성 전, 생성을 위한 기본 정보가 필요해요!
         </Typography>
