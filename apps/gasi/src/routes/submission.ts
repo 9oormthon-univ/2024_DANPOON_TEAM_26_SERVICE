@@ -25,7 +25,7 @@ export const init = p
     const user = checkRegistered(ctx.user);
     const ongoingSubmission = await mSubmission.find({
       userId: user.id,
-      status: { $in: ["PREPARING", "STARTED", "SUBMITTED", "REVIEWING"] },
+      status: { $in: ["PREPARING", "STARTED"] },
     });
     if (ongoingSubmission.length > 0)
       throw new TRPCError({
