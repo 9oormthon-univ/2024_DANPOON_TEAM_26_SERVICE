@@ -18,8 +18,8 @@ const EvaluationResultInfo = () => {
         </Typography>
       </div>
       <div className="space-y-3">
-        <Typography as="p" className="font-extrabold text-xl">
-          과제 설명
+        <Typography as="p" className="font-extrabold text-lg">
+          과제설명
         </Typography>
         <Typography as="p" className="bg-primary rounded-3xl py-7 pl-6 text-white font-extrabold">
           설명 : {assginmentData?.description || "과제 설명란"}
