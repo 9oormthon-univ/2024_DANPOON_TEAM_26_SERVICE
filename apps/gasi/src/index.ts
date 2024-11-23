@@ -1,12 +1,12 @@
 import dotenvx from "@dotenvx/dotenvx";
 import fastifyCors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
+import Docker from "dockerode";
 import Fastify from "fastify";
 import mongoose from "mongoose";
 import { renderTrpcPanel } from "trpc-ui";
 import { createContext } from "./context.js";
 import { appRouter } from "./router.js";
-import Docker from "dockerode";
 
 dotenvx.config();
 
@@ -30,13 +30,14 @@ if (process.env.CHANNEL === "local") {
   });
 }
 
-server.post("/github/webhook", async (_, res) => {
-  server.log.info(res);
+server.post("/github/webhook", async (req, res) => {
+  const json = req.body as { payload: string };
+  console.log(JSON.parse(json.payload));
 });
 
 const start = async () => {
   try {
-    await server.listen({ host: '0.0.0.0', port: 8080 });
+    await server.listen({ host: "0.0.0.0", port: 8080 });
     console.log("Server is running on port 8080");
   } catch (err) {
     server.log.error(err);
@@ -44,9 +45,11 @@ const start = async () => {
   }
 };
 
-export const docker = process.env.DOCKER_SOCK ? new Docker({socketPath: process.env.DOCKER_SOCK}) : null;
+export const docker = process.env.DOCKER_SOCK
+  ? new Docker({ socketPath: process.env.DOCKER_SOCK })
+  : null;
 
-if(docker) {
+if (docker) {
   console.log("Dockerode Initiated.");
 }
 start();
