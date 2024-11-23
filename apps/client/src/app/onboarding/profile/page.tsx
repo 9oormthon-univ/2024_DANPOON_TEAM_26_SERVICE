@@ -1,5 +1,5 @@
-import CreateAssignmentPage from "@/pages/assignment/create-assignment-page";
+import OnboardingProfilePage from "@/pages/onboarding/onboarding-profile-page";
 
 export default function CreateAssignment() {
-  return <CreateAssignmentPage />;
+  return <OnboardingProfilePage />;
 }

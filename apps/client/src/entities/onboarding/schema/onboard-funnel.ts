@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const InputNameSchema = z
+export const OnboardingSchema = z
   .object({
     name: z
       .string()
@@ -28,7 +28,7 @@ export const InputNameSchema = z
   })
   .partial();
 
-export const InputGithubSchema = InputNameSchema.required({ name: true });
+export const InputGithubSchema = OnboardingSchema.required({ name: true });
 
 export const SelectJobSchema = InputGithubSchema.required({ github: true });
 
@@ -41,7 +41,7 @@ export const InputEducationSchema = InputTechAndCompanySchema.required({
 
 export const CompleteSchema = InputEducationSchema.required({});
 
-export type InputName = z.infer<typeof InputNameSchema>;
+export type OnboardingFunnel = z.infer<typeof OnboardingSchema>;
 export type InputGithub = z.infer<typeof InputGithubSchema>;
 export type SelectJob = z.infer<typeof SelectJobSchema>;
 export type InputTechAndCompany = z.infer<typeof InputTechAndCompanySchema>;

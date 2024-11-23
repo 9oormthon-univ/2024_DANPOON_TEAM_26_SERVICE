@@ -1,6 +1,6 @@
 "use client";
 
-import { InputNameSchema } from "@/entities/onboarding/schema/onboard-funnel";
+import { OnboardingSchema } from "@/entities/onboarding/schema/onboard-funnel";
 import { Button } from "@/shared/ui/button";
 import Typography from "@/shared/ui/common/typography/typography";
 import { Label } from "@/shared/ui/label";
@@ -31,7 +31,7 @@ export default function InputTechAndCompany({
 
   const handleNext = () => {
     try {
-      InputNameSchema.parse({ tech });
+      OnboardingSchema.parse({ tech });
       setTechError(null);
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -40,7 +40,7 @@ export default function InputTechAndCompany({
     }
 
     try {
-      InputNameSchema.parse({ company });
+      OnboardingSchema.parse({ company });
       setCompanyError(null);
     } catch (err) {
       if (err instanceof z.ZodError) {
