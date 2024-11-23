@@ -2,9 +2,12 @@
 
 import { trpc } from "@/shared/api/trpc";
 import Typography from "@/shared/ui/common/typography/typography";
+import { useParams } from "next/navigation";
 
 const EvaluationResultInfo = () => {
-  const { data: assginmentData } = trpc.v1.asgmt.get.useQuery({ id: "1" });
+  const parmas = useParams();
+  const id = (parmas?.id as string) || "1";
+  const { data: assginmentData } = trpc.v1.asgmt.get.useQuery({ id });
   const category = assginmentData?.prompt.fields.join(" / ");
 
   return (
