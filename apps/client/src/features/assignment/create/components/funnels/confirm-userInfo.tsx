@@ -46,7 +46,7 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
         <Card className="p-8">
           <Flex direction="col" gap="8">
             <Flex direction="col" gap="4">
-              <Typography as="h2" size="lg" weight="medium">
+              <Typography as="h2" size="base" weight="medium">
                 1. 희망 직무를 확인해주세요
               </Typography>
               <Flex wrap="wrap" gap="2">
@@ -64,7 +64,7 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
             </Flex>
 
             <Flex direction="col" gap="4">
-              <Typography as="h2" size="lg" weight="medium">
+              <Typography as="h2" size="base" weight="medium">
                 2. 관심 기술을 확인해주세요
               </Typography>
               <Flex wrap="wrap" gap="2">
@@ -82,7 +82,7 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
             </Flex>
 
             <Flex direction="col" gap="4">
-              <Typography as="h2" size="lg" weight="medium">
+              <Typography as="h2" size="base" weight="medium">
                 3. 관심 기업을 확인해주세요
               </Typography>
               <Flex wrap="wrap" gap="2">
@@ -101,7 +101,7 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
           </Flex>
         </Card>
 
-        <Flex direction="col" gap="4" className="mt-8">
+        <Flex gap="4" className="mt-8">
           <Button
             className="w-full py-6"
             onClick={() =>
@@ -117,11 +117,11 @@ export default function SelectionForm({ onNext }: ConfirmUserInfoProps) {
             </Typography>
           </Button>
           <Button
-            variant="secondary"
-            className="w-full py-6"
+            variant="outline"
+            className="w-full py-6 border-2 border-primary"
             onClick={() => onNext("InputUserInfo")}
           >
-            <Typography size="base" weight="semibold" color="primary">
+            <Typography size="base" weight="semibold" color="black">
               정보 새로 입력하기
             </Typography>
           </Button>
