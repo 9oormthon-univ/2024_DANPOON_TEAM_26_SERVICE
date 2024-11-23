@@ -1,35 +1,35 @@
 import type {
   Complete,
   InputGithub,
-  InputName,
   InputTechAndCompany,
+  OnboardingFunnel,
   SelectJob,
 } from "@/entities/onboarding/schema/onboard-funnel";
 import {
   CompleteSchema,
   InputGithubSchema,
-  InputNameSchema,
   InputTechAndCompanySchema,
+  OnboardingSchema,
   SelectJobSchema,
 } from "@/entities/onboarding/schema/onboard-funnel";
 import { useFunnel } from "@use-funnel/browser";
 
-export default function useCreateAssignmentFunnel() {
+export default function useOnboardingFunnel() {
   const funnel = useFunnel<{
-    InputName: InputName;
+    InputName: OnboardingFunnel;
     InputGithub: InputGithub;
     SelectJob: SelectJob;
     InputTechAndCompany: InputTechAndCompany;
     // InputEducation: InputEducation;
     Complete: Complete;
   }>({
-    id: "create-assignment",
+    id: "onboarding",
     initial: {
       step: "InputName",
       context: {},
     },
     steps: {
-      InputName: { parse: InputNameSchema.parse },
+      InputName: { parse: OnboardingSchema.parse },
       InputGithub: { parse: InputGithubSchema.parse },
       SelectJob: { parse: SelectJobSchema.parse },
       InputTechAndCompany: { parse: InputTechAndCompanySchema.parse },

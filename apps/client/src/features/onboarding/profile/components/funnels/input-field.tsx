@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import Typography from "@/shared/ui/common/typography/typography";
 import Flex from "@/shared/ui/wrapper/flex/flex";
-import CategoryFilter from "@/widgets/ui/category-filter";
+import CategoryFilter from "@/widgets/ui/category-filter/category-filter";
 import { useState } from "react";
 import OnboardingLayout from "./onboarding-layout";
 

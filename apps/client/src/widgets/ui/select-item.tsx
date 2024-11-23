@@ -10,6 +10,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/shared/ui/command";
+import Typography from "@/shared/ui/common/typography/typography";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
@@ -45,9 +46,17 @@ export default function SelectItem({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {value.length > 0
-            ? value.map((val) => items.find((item) => item.value === val)?.label || "").join(", ")
-            : "Select frameworks..."}
+          {/* overflow: hidden;
+          white-space: nowrap; */}
+          <Typography
+            size="sm"
+            weight="medium"
+            className="overflow-hidden whitespace-nowrap overflow-ellipsis truncate"
+          >
+            {value.length > 0
+              ? value.map((val) => items.find((item) => item.value === val)?.label || "").join(", ")
+              : "Select frameworks..."}
+          </Typography>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -56,7 +65,7 @@ export default function SelectItem({
           <CommandInput placeholder="Search framework..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="overflow-hidden">
               {items.map((item) => (
                 <CommandItem
                   key={item.value}

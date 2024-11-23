@@ -1,6 +1,6 @@
 "use client";
 
-import { InputNameSchema } from "@/entities/onboarding/schema/onboard-funnel";
+import { OnboardingSchema } from "@/entities/onboarding/schema/onboard-funnel";
 import { Button } from "@/shared/ui/button";
 import Typography from "@/shared/ui/common/typography/typography";
 import { Input } from "@/shared/ui/input";
@@ -20,7 +20,7 @@ export default function InputName({
 
   const handleNext = () => {
     try {
-      InputNameSchema.parse({ name });
+      OnboardingSchema.parse({ name });
       setError(null);
       onNext(name);
     } catch (err) {

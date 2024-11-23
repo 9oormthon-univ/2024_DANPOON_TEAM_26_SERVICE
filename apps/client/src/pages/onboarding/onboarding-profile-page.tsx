@@ -4,10 +4,10 @@ import InputField from "@/features/onboarding/profile/components/funnels/input-f
 import InputGithub from "@/features/onboarding/profile/components/funnels/input-github";
 import InputName from "@/features/onboarding/profile/components/funnels/input-name";
 import InputTechAndCompany from "@/features/onboarding/profile/components/funnels/input-tech-and-company";
-import useCreateAssignmentFunnel from "@/features/onboarding/profile/hooks/use-create-assignment-funnel";
+import useOnboardingFunnel from "@/features/onboarding/profile/hooks/use-onboarding-funnel";
 
-export default function CreateAssignmentPage() {
-  const funnel = useCreateAssignmentFunnel();
+export default function OnboardingProfilePage() {
+  const funnel = useOnboardingFunnel();
 
   return (
     <funnel.Render
