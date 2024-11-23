@@ -34,8 +34,7 @@ if (process.env.CHANNEL === "local") {
 }
 
 server.post("/github/webhook", async (req, res) => {
-  const body = req.body as { payload: string };
-  const json = JSON.parse(body.payload);
+  const json = req.body as { ref: string; repository: { name: string } };
   if (!json.ref.endsWith("/submit")) {
     res.send();
     return;
@@ -53,6 +52,7 @@ server.post("/submission/update", async (req, res) => {
     return;
   }
   doc.status = status;
+  if (status === "STARTED") doc.repoUrl = `https://github.com/ReQuest-members/${id}`;
   await doc.save();
   if (status === "SUBMITTED") {
     // TODO: Send request to CARI
