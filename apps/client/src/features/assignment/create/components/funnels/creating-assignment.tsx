@@ -1,11 +1,12 @@
 "use client";
 
 import monitor from "@/assets/images/create-assignment.png";
+import { trpc } from "@/shared/api/trpc";
 import { Badge } from "@/shared/ui/badge";
 import Typography from "@/shared/ui/common/typography/typography";
 import Flex from "@/shared/ui/wrapper/flex/flex";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CreateAssignmentLayout from "./create-assignment-layout";
 
 interface CreatingAssignmentProps {
@@ -18,16 +19,47 @@ interface CreatingAssignmentProps {
 }
 
 export default function CreatingAssignment({ createProps, onNext }: CreatingAssignmentProps) {
+  const [pollingEnabled, setPollingEnabled] = useState(false);
+
+  const generateMutation = trpc.v1.asgmt.generate.useMutation({
+    onSuccess: (data) => {
+      setPollingEnabled(true);
+    },
+    onError: (error) => {
+      console.error("과제 생성 중 오류 발생:", error);
+      setPollingEnabled(true);
+    },
+  });
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    const interval = setInterval(() => {
-      // polling
-      onNext();
-    }, 1000);
-    return () => clearInterval(interval);
+    generateMutation.mutate({
+      fields: createProps.field,
+      techs: createProps.tech,
+      companies: createProps.company,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // fileds, tech, company를 하나의 배열로 합침
+  const id = generateMutation.data?.id;
+
+  const { data: user } = trpc.v1.user.me.useQuery();
+
+  const { data: assignment } = trpc.v1.asgmt.get.useQuery(
+    { id: id || (user?.lastGeneratedAssignment as string) },
+    {
+      enabled: pollingEnabled || !!id || !!user?.lastGeneratedAssignment,
+      refetchInterval: 3000,
+    },
+  );
+
+  // 과제 생성이 되면 다음 단계로 넘어가기
+  useEffect(() => {
+    if (assignment?.status === "READY") {
+      onNext();
+    }
+  }, [assignment?.status, onNext]);
+
   const entries = Object.entries(createProps).reduce<string[]>(
     // biome-ignore lint/performance/noAccumulatingSpread: <explanation>
     (acc, [key, value]) => [...acc, ...value],

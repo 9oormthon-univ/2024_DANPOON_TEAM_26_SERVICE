@@ -1,12 +1,13 @@
 "use client";
-import type { InProgress } from "@/entities/assignment/create/schema/create-assignment-funnel";
+import type { InProgress } from "@/entities/assignment/create/schema/create-assignment-schema";
 import ConfirmUserInfo from "@/features/assignment/create/components/funnels/confirm-userInfo";
 import CreateSuccess from "@/features/assignment/create/components/funnels/create-success";
 import CreatingAssignment from "@/features/assignment/create/components/funnels/creating-assignment";
 import InputUserInfo from "@/features/assignment/create/components/funnels/input-userinfo";
 import useCreateAssignmentfunnel from "@/features/assignment/create/hooks/use-create-assignment-funnel";
+import { trpc } from "@/shared/api/trpc";
 
-export default function AssignmentCreatePage() {
+export default trpc.withTRPC(function AssignmentCreatePage() {
   const funnel = useCreateAssignmentfunnel();
 
   return (
@@ -17,7 +18,6 @@ export default function AssignmentCreatePage() {
           <ConfirmUserInfo
             onNext={(branch: "InputUserInfo" | "InProgress", progressProps?: InProgress) =>
               history.push(branch, {
-                // biome-ignore lint/style/noNonNullAssertion: <explanation>
                 ...(progressProps ? progressProps : undefined),
               })
             }
@@ -40,4 +40,4 @@ export default function AssignmentCreatePage() {
       Completed={({ history }) => <CreateSuccess />}
     />
   );
-}
+});
